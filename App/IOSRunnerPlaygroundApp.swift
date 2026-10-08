@@ -165,7 +165,7 @@ struct ContentView: View {
                     Text("All")
                         .tag("All")
 
-                    Text("Larva)
+                    Text("Larva")
                         .tag("L")
                 }
                 .pickerStyle(.menu)
