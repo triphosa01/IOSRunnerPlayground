@@ -74,7 +74,7 @@ jobs:
 
           echo "BUNDLE_ID=$BUNDLE_ID" >> "$GITHUB_ENV"
 
-            - name: Launch application
+      - name: Launch application
         run: |
           echo "Launching: $BUNDLE_ID"
           xcrun simctl launch "$SIMULATOR_UDID" "$BUNDLE_ID"
