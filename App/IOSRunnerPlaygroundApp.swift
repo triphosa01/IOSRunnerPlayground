@@ -147,23 +147,27 @@ struct ContentView: View {
 
     var body: some View {
 
-        NavigationStack {
-            VStack {
-                
-                Picker("Stage", selection: $selectedStage) {
-                    Text("All")
-                        .tag("All")
+    NavigationStack {
 
-                    Text("Case")
-                        .tag("Case")
-                }
-                .pickerStyle(.menu)
-                .padding(.horizontal)
+        VStack {
 
-                List(accounts.filter { item in
+            Picker("Stage", selection: $selectedStage) {
+                Text("All")
+                    .tag("All")
+
+                Text("Case")
+                    .tag("Case")
+            }
+            .pickerStyle(.menu)
+            .padding(.horizontal)
+
+            List(
+                accounts.filter { item in
                     selectedStage == "All" ||
                     item.stage == selectedStage
-                }, id: \.id) { item in
+                },
+                id: \.id
+            ) { item in
 
                 VStack(alignment: .leading, spacing: 4) {
 
@@ -225,32 +229,35 @@ struct ContentView: View {
                 }
                 .padding(.vertical, 4)
             }
-            .navigationTitle("British Micros")
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        accountsExpanded.toggle()
-                    } label: {
-                        Image(
-                            systemName: accountsExpanded
-                                ? "rectangle.compress.vertical"
-                                : "rectangle.expand.vertical"
-                        )
-                    }
-                    .accessibilityLabel(
-                        accountsExpanded
-                            ? "Collapse accounts"
-                            : "Expand accounts"
+        }
+        .navigationTitle("British Micros")
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    accountsExpanded.toggle()
+                } label: {
+                    Image(
+                        systemName: accountsExpanded
+                            ? "rectangle.compress.vertical"
+                            : "rectangle.expand.vertical"
                     )
-                    .accessibilityIdentifier("accountsExpandCollapseButton")
                 }
+                .accessibilityLabel(
+                    accountsExpanded
+                        ? "Collapse accounts"
+                        : "Expand accounts"
+                )
+                .accessibilityIdentifier(
+                    "accountsExpandCollapseButton"
+                )
             }
         }
-        .task {
-            let database = DatabaseManager()
-            accounts = database.fetchAccounts()
-        }
     }
+    .task {
+        let database = DatabaseManager()
+        accounts = database.fetchAccounts()
+    }
+}
 
     private func taxonText(
         _ taxon: String,
