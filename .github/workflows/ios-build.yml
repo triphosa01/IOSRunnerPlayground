@@ -8,12 +8,19 @@ on:
 jobs:
   build:
     runs-on: macos-15
+
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
 
       - name: Install XcodeGen
         run: brew install xcodegen
+
+      - name: Show Xcode version
+        run: xcodebuild -version
+
+      - name: Show available iOS simulators
+        run: xcrun simctl list devices available
 
       - name: Generate Xcode project
         run: xcodegen generate
@@ -27,4 +34,37 @@ jobs:
           -sdk iphonesimulator
           -destination 'generic/platform=iOS Simulator'
           CODE_SIGNING_ALLOWED=NO
+          -derivedDataPath build
           build
+
+      - name: Find built application
+        run: find build -name "*.app" -type d
+
+      - name: Boot iPhone Simulator
+        run: |
+          DEVICE_ID=$(xcrun simctl list devices available | \
+            grep -m 1 "iPhone" | \
+            sed -E 's/.*\(([A-F0-9-]+)\).*/\1/')
+
+          echo "Using simulator: $DEVICE_ID"
+
+          xcrun simctl boot "$DEVICE_ID" || true
+          xcrun simctl bootstatus "$DEVICE_ID" -b
+
+          echo "SIMULATOR_UDID=$DEVICE_ID" >> "$GITHUB_ENV"
+
+      - name: Install application
+        run: |
+          APP_PATH=$(find build -name "IOSRunnerPlayground.app" -type d | head -1)
+
+          echo "Installing: $APP_PATH"
+
+          xcrun simctl install "$SIMULATOR_UDID" "$APP_PATH"
+
+      - name: Launch application
+        run: |
+          xcrun simctl launch "$SIMULATOR_UDID" "IOSRunnerPlayground"
+
+      - name: List running simulator
+        run: |
+          xcrun simctl list devices
