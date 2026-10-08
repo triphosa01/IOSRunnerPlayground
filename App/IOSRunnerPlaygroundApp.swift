@@ -27,6 +27,7 @@ struct AccountsList {
     let periods: String?
     let notes: String?
     let vernacular: String?
+    let stage: String?
 }
 
 final class DatabaseManager {
@@ -67,7 +68,7 @@ final class DatabaseManager {
         }
 
         let sql = """
-        SELECT ID, CodeText, Code, Taxon, Periods, Notes, Vernacular
+        SELECT ID, CodeText, Code, Taxon, Periods, Notes, Vernacular, Stage
         FROM AccountsList
         ORDER BY ID
         """
@@ -101,6 +102,7 @@ final class DatabaseManager {
             let periods = optionalString(statement, column: 4)
             let notes = optionalString(statement, column: 5)
             let vernacular = optionalString(statement, column: 6)
+            let stage = optionalString(statement, column: 7)
 
             results.append(
                 AccountsList(
@@ -110,7 +112,8 @@ final class DatabaseManager {
                     taxon: taxon,
                     periods: periods,
                     notes: notes,
-                    vernacular: vernacular
+                    vernacular: vernacular,
+                    stage: stage
                 )
             )
         }
@@ -140,11 +143,27 @@ struct ContentView: View {
 
     @State private var accounts: [AccountsList] = []
 
+    @State private var selectedStage = "All"
+
     var body: some View {
 
         NavigationStack {
+            VStack {
+                
+                Picker("Stage", selection: $selectedStage) {
+                    Text("All")
+                        .tag("All")
 
-            List(accounts, id: \.id) { item in
+                    Text("Case")
+                        .tag("Case")
+                }
+                .pickerStyle(.menu)
+                .padding(.horizontal)
+
+                List(accounts.filter { item in
+                    selectedStage == "All" ||
+                    item.stage == selectedStage
+                }, id: \.id) { item in
 
                 VStack(alignment: .leading, spacing: 4) {
 
