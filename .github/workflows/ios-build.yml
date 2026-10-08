@@ -74,12 +74,23 @@ jobs:
 
           echo "BUNDLE_ID=$BUNDLE_ID" >> "$GITHUB_ENV"
 
-      - name: Launch application
+            - name: Launch application
         run: |
           echo "Launching: $BUNDLE_ID"
-
           xcrun simctl launch "$SIMULATOR_UDID" "$BUNDLE_ID"
 
-      - name: List running simulator
+      - name: Wait for app to render
+        run: sleep 3
+
+      - name: Take simulator screenshot
         run: |
-          xcrun simctl list devices
+          xcrun simctl io "$SIMULATOR_UDID" screenshot ios-simulator.png
+
+      - name: Upload simulator screenshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-simulator-screenshot
+          path: ios-simulator.png
+
+      - name: List simulator devices
+        run: xcrun simctl list devices
