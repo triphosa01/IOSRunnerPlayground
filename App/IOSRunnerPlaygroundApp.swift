@@ -3,6 +3,15 @@ import SQLite3
 
 @main
 struct IOSRunnerPlaygroundApp: App {
+
+    init() {
+        if CommandLine.arguments.contains("-UITestResetPreferences") {
+            UserDefaults.standard.removeObject(
+                forKey: "accountsExpanded"
+            )
+        }
+    }
+
     var body: some Scene {
         WindowGroup {
             ContentView()
@@ -126,6 +135,9 @@ final class DatabaseManager {
 
 struct ContentView: View {
 
+    @AppStorage("accountsExpanded")
+    private var accountsExpanded = true
+
     @State private var accounts: [AccountsList] = []
 
     var body: some View {
@@ -137,49 +149,83 @@ struct ContentView: View {
                 VStack(alignment: .leading, spacing: 4) {
 
                     if let taxon = item.taxon {
-                        taxonText(taxon)
+                        taxonText(
+                            taxon,
+                            expanded: accountsExpanded
+                        )
                     }
 
-                    HStack {
-                        Text(item.code)
-                            .font(.footnote)
-                            .foregroundStyle(.secondary)
+                    if accountsExpanded {
 
-                        Spacer()
-
-                        if let vernacular = item.vernacular {
-                            Text(vernacular)
+                        HStack {
+                            Text(item.code)
                                 .font(.footnote)
                                 .foregroundStyle(.secondary)
+
+                            Spacer()
+
+                            if let vernacular = item.vernacular {
+                                Text(vernacular)
+                                    .font(.footnote)
+                                    .foregroundStyle(.secondary)
+                            }
                         }
-                    }
 
-                    if let periods = item.periods?
-                        .replacingOccurrences(of: "O:;", with: "")
-                        .trimmingCharacters(in: .whitespaces),
-                       !periods.isEmpty {
+                        if let periods = item.periods?
+                            .replacingOccurrences(of: "O:;", with: "")
+                            .trimmingCharacters(in: .whitespaces),
+                           !periods.isEmpty {
 
-                        Text(periods)
-                    }
+                            Text(periods)
+                        }
 
-                    if let notes = item.notes {
+                        if let notes = item.notes {
 
-                        Text(
-                            notes
-                                .replacingOccurrences(of: "\r\n", with: " ")
-                                .replacingOccurrences(of: "\n", with: " ")
-                                .replacingOccurrences(
-                                    of: " +",
-                                    with: " ",
-                                    options: .regularExpression
-                                )
-                                .replacingOccurrences(of: ".;", with: ";")
-                        )
+                            Text(
+                                notes
+                                    .replacingOccurrences(
+                                        of: "\r\n",
+                                        with: " "
+                                    )
+                                    .replacingOccurrences(
+                                        of: "\n",
+                                        with: " "
+                                    )
+                                    .replacingOccurrences(
+                                        of: " +",
+                                        with: " ",
+                                        options: .regularExpression
+                                    )
+                                    .replacingOccurrences(
+                                        of: ".;",
+                                        with: ";"
+                                    )
+                            )
+                        }
                     }
                 }
                 .padding(.vertical, 4)
             }
             .navigationTitle("British Micros")
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        accountsExpanded.toggle()
+                    } label: {
+                        Image(
+                            systemName: accountsExpanded
+                                ? "rectangle.compress.vertical"
+                                : "rectangle.expand.vertical"
+                        )
+                    }
+                    .accessibilityLabel(
+                        accountsExpanded
+                            ? "Collapse accounts"
+                            : "Expand accounts"
+                    )
+                    .accessibilityIdentifier("accountsExpandCollapseButton")
+                }
+            }
         }
         .task {
             let database = DatabaseManager()
@@ -187,12 +233,18 @@ struct ContentView: View {
         }
     }
 
-    private func taxonText(_ taxon: String) -> Text {
+    private func taxonText(
+        _ taxon: String,
+        expanded: Bool
+    ) -> Text {
 
         guard let splitIndex = taxon.firstIndex(of: "(") else {
             return Text(taxon)
                 .bold()
                 .italic()
+                .foregroundStyle(
+                    expanded ? .primary : .secondary
+                )
         }
 
         let boldPart = String(
@@ -203,10 +255,16 @@ struct ContentView: View {
             taxon[splitIndex...]
         ).trimmingCharacters(in: .whitespaces)
 
-        return Text(boldPart)
+        var result = Text(boldPart)
             .bold()
             .italic()
-        +
-        Text(" " + normalPart)
+
+        if !normalPart.isEmpty {
+            result = result + Text(" " + normalPart)
+        }
+
+        return result.foregroundStyle(
+            expanded ? .primary : .secondary
+        )
     }
 }

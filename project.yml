@@ -24,3 +24,15 @@ targets:
         INFOPLIST_KEY_UILaunchScreen_Generation: YES
         SWIFT_VERSION: "5.0"
         TARGETED_DEVICE_FAMILY: "1,2"
+
+  IOSRunnerPlaygroundUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: UITests
+    dependencies:
+      - target: IOSRunnerPlayground
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.IOSRunnerPlaygroundUITests
+        SWIFT_VERSION: "5.0"

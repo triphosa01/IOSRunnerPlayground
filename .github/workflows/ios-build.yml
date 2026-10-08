@@ -53,6 +53,18 @@ jobs:
 
           echo "SIMULATOR_UDID=$DEVICE_ID" >> "$GITHUB_ENV"
 
+      - name: Run UI tests
+        run: |
+          xcodebuild \
+            test \
+            -project IOSRunnerPlayground.xcodeproj \
+            -scheme IOSRunnerPlayground \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -destination "platform=iOS Simulator,id=$SIMULATOR_UDID" \
+            CODE_SIGNING_ALLOWED=NO \
+            -derivedDataPath build
+
       - name: Install application
         run: |
           APP_PATH=$(find build -name "IOSRunnerPlayground.app" -type d | head -1)
@@ -60,6 +72,7 @@ jobs:
           echo "Installing: $APP_PATH"
 
           xcrun simctl install "$SIMULATOR_UDID" "$APP_PATH"
+
       - name: Get bundle identifier
         run: |
           APP_PATH=$(find build -name "IOSRunnerPlayground.app" -type d | head -1)
