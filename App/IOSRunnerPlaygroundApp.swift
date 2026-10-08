@@ -165,19 +165,19 @@ struct ContentView: View {
                     Text("All")
                         .tag("All")
 
-                    Text("Case")
-                        .tag("Case")
+                    Text("Larva)
+                        .tag("L")
                 }
                 .pickerStyle(.menu)
                 .accessibilityIdentifier("stagePicker")
             }
             .padding(.horizontal)
 
-            Text("\(filteredAccounts.count) species")
+            Text("\(filteredAccounts.count) records")
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .padding(.horizontal)
-                .accessibilityIdentifier("speciesCount")
+                .accessibilityIdentifier("recordCount")
 
             List(filteredAccounts, id: \.id) { item in
 

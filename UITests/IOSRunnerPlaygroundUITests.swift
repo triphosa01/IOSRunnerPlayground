@@ -89,19 +89,17 @@ final class IOSRunnerPlaygroundUITests: XCTestCase {
 
         app.launch()
 
-        // The database should initially contain all 1596 species.
-        let speciesCount = app.staticTexts[
-            "speciesCount"
-        ]
+        // The database should initially contain all species.
+        let recordCount = app.staticTexts["recordCount"]
 
         XCTAssertTrue(
-            speciesCount.waitForExistence(timeout: 10),
-            "Species count was not found"
+            recordCount.waitForExistence(timeout: 10),
+            "Record count was not found"
         )
 
         XCTAssertEqual(
-            speciesCount.label,
-            "1596 species"
+            recordCount.label,
+            "24471 records"
         )
 
         // Find the Stage picker.
@@ -114,23 +112,22 @@ final class IOSRunnerPlaygroundUITests: XCTestCase {
             "Stage picker was not found"
         )
 
-        // Open the picker.
         stagePicker.tap()
 
-        // Select Case.
-        let caseOption = app.buttons["Case"]
+        let larvaOption = app.buttons["Larva"]
 
         XCTAssertTrue(
-            caseOption.waitForExistence(timeout: 10),
-            "Case option was not found"
+            larvaOption.waitForExistence(timeout: 10),
+            "Larva option was not found"
         )
 
-        caseOption.tap()
+        larvaOption.tap()
 
-        // The filtered list should contain exactly 160 species.
+        // Selecting Larva (database Stage = "L")
+        // should produce exactly 11,717 rows.
         XCTAssertEqual(
-            speciesCount.label,
-            "160 species"
+            recordCount.label,
+            "11717 species"
         )
     }
 }
