@@ -151,14 +151,19 @@ struct ContentView: View {
 
         VStack {
 
-            Picker("Stage", selection: $selectedStage) {
-                Text("All")
-                    .tag("All")
+            HStack {
+                Text("Stage:")
 
-                Text("Case")
-                    .tag("Case")
+                Picker("Stage", selection: $selectedStage) {
+                    Text("All")
+                        .tag("All")
+
+                    Text("Case")
+                        .tag("Case")
+                }
+                .pickerStyle(.menu)
+                .accessibilityIdentifier("stagePicker")
             }
-            .pickerStyle(.menu)
             .padding(.horizontal)
 
             List(
