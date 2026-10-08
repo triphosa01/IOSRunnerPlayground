@@ -1,11 +1,21 @@
+name: IOSRunnerPlayground
+
+options:
+  bundleIdPrefix: com.example
+  deploymentTarget:
+    iOS: "17.0"
+
 targets:
   IOSRunnerPlayground:
     type: application
     platform: iOS
+
     sources:
       - path: App
+
     resources:
       - path: App/Data/lpyAccounts.db
+
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.example.IOSRunnerPlayground
