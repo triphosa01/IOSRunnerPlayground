@@ -1,5 +1,6 @@
 import SwiftUI
 import SQLite3
+import WebKit
 
 @main
 struct IOSRunnerPlaygroundApp: App {
@@ -136,6 +137,47 @@ final class DatabaseManager {
     }
 }
 
+struct WebView: UIViewRepresentable {
+
+    let url: URL
+
+    func makeUIView(context: Context) -> WKWebView {
+        let webView = WKWebView()
+        webView.navigationDelegate = context.coordinator
+        return webView
+    }
+
+    func updateUIView(
+        _ webView: WKWebView,
+        context: Context
+    ) {
+        let request = URLRequest(url: url)
+        webView.load(request)
+    }
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator()
+    }
+
+    final class Coordinator: NSObject, WKNavigationDelegate {
+
+        func webView(
+            _ webView: WKWebView,
+            didFinish navigation: WKNavigation?
+        ) {
+            print("WebView finished loading: \(webView.url?.absoluteString ?? "")")
+        }
+
+        func webView(
+            _ webView: WKWebView,
+            didFail navigation: WKNavigation?,
+            withError error: Error
+        ) {
+            print("WebView navigation failed: \(error.localizedDescription)")
+        }
+    }
+}
+
 struct ContentView: View {
 
     @AppStorage("accountsExpanded")
@@ -144,6 +186,8 @@ struct ContentView: View {
     @State private var accounts: [AccountsList] = []
 
     @State private var selectedStage = "All"
+
+    @State private var showWebView = false
 
     private var filteredAccounts: [AccountsList] {
         accounts.filter { item in
@@ -263,6 +307,26 @@ struct ContentView: View {
                 .accessibilityIdentifier(
                     "accountsExpandCollapseButton"
                 )
+            }
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    showWebView = true
+                } label: {
+                    Image(systemName: "globe")
+                }
+                .accessibilityLabel("Open Leafmines")
+                .accessibilityIdentifier("openLeafminesButton")
+            }
+        }
+        .sheet(isPresented: $showWebView) {
+            NavigationStack {
+                WebView(
+                    url: URL(
+                        string: "http://www.leafmines.co.uk/html/Lepidoptera/B.robustana.htm"
+                    )!
+                )
+                .navigationTitle("Leafmines")
+                .navigationBarTitleDisplayMode(.inline)
             }
         }
     }

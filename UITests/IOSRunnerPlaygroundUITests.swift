@@ -99,7 +99,7 @@ final class IOSRunnerPlaygroundUITests: XCTestCase {
 
         XCTAssertEqual(
             recordCount.label,
-            "24471 records"
+            "24,471 records"
         )
 
         // Find the Stage picker.
@@ -127,7 +127,32 @@ final class IOSRunnerPlaygroundUITests: XCTestCase {
         // should produce exactly 11,717 rows.
         XCTAssertEqual(
             recordCount.label,
-            "11717 species"
+            "11,717 species"
+        )
+    }
+
+    func testLeafminesWebView() {
+
+        let app = XCUIApplication()
+
+        app.launch()
+
+        let openLeafminesButton = app.buttons[
+            "openLeafminesButton"
+        ]
+
+        XCTAssertTrue(
+            openLeafminesButton.waitForExistence(timeout: 10),
+            "Open Leafmines button was not found"
+        )
+
+        openLeafminesButton.tap()
+
+        let webView = app.webViews.firstMatch
+
+        XCTAssertTrue(
+            webView.waitForExistence(timeout: 15),
+            "Leafmines WebView was not found"
         )
     }
 }

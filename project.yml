@@ -22,6 +22,7 @@ targets:
         PRODUCT_NAME: IOSRunnerPlayground
         GENERATE_INFOPLIST_FILE: YES
         INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_NSAppTransportSecurity_NSExceptionDomains_www.leafmines.co.uk_NSExceptionAllowsInsecureHTTPLoads: YES
         SWIFT_VERSION: "5.0"
         TARGETED_DEVICE_FAMILY: "1,2"
 
