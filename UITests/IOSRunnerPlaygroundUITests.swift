@@ -90,11 +90,18 @@ final class IOSRunnerPlaygroundUITests: XCTestCase {
         app.launch()
 
         // The database should initially contain all 1596 species.
-        let allSpecies = app.staticTexts["1596 species"]
+        let speciesCount = app.staticTexts[
+            "speciesCount"
+        ]
 
         XCTAssertTrue(
-            allSpecies.waitForExistence(timeout: 10),
-            "Expected 1596 species to be displayed"
+            speciesCount.waitForExistence(timeout: 10),
+            "Species count was not found"
+        )
+
+        XCTAssertEqual(
+            speciesCount.label,
+            "1596 species"
         )
 
         // Find the Stage picker.
@@ -121,17 +128,9 @@ final class IOSRunnerPlaygroundUITests: XCTestCase {
         caseOption.tap()
 
         // The filtered list should contain exactly 160 species.
-        let caseSpecies = app.staticTexts["160 species"]
-
-        XCTAssertTrue(
-            caseSpecies.waitForExistence(timeout: 10),
-            "Expected 160 species after selecting Case"
-        )
-
-        // The original 1596 count should no longer be visible.
-        XCTAssertFalse(
-            allSpecies.exists,
-            "1596 species should not be displayed after filtering"
+        XCTAssertEqual(
+            speciesCount.label,
+            "160 species"
         )
     }
 }

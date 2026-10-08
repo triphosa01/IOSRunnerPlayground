@@ -177,6 +177,7 @@ struct ContentView: View {
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .padding(.horizontal)
+                .accessibilityIdentifier("speciesCount")
 
             List(filteredAccounts, id: \.id) { item in
 
