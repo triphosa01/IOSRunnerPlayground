@@ -60,18 +60,18 @@ jobs:
           echo "Installing: $APP_PATH"
 
           xcrun simctl install "$SIMULATOR_UDID" "$APP_PATH"
-
       - name: Get bundle identifier
         run: |
-          BUNDLE_ID=$(xcodebuild \
-            -project IOSRunnerPlayground.xcodeproj \
-            -scheme IOSRunnerPlayground \
-            -showBuildSettings |
-            grep "PRODUCT_BUNDLE_IDENTIFIER =" |
-            head -1 |
-            awk -F ' = ' '{print $2}')
+          APP_PATH=$(find build -name "IOSRunnerPlayground.app" -type d | head -1)
+
+          echo "Application: $APP_PATH"
+
+          BUNDLE_ID=$(/usr/libexec/PlistBuddy \
+            -c "Print :CFBundleIdentifier" \
+            "$APP_PATH/Info.plist")
 
           echo "Bundle identifier: $BUNDLE_ID"
+
           echo "BUNDLE_ID=$BUNDLE_ID" >> "$GITHUB_ENV"
 
       - name: Launch application
