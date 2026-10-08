@@ -145,6 +145,13 @@ struct ContentView: View {
 
     @State private var selectedStage = "All"
 
+    private var filteredAccounts: [AccountsList] {
+        accounts.filter { item in
+            selectedStage == "All" ||
+            item.stage == selectedStage
+        }
+    }
+
     var body: some View {
 
     NavigationStack {
@@ -166,13 +173,12 @@ struct ContentView: View {
             }
             .padding(.horizontal)
 
-            List(
-                accounts.filter { item in
-                    selectedStage == "All" ||
-                    item.stage == selectedStage
-                },
-                id: \.id
-            ) { item in
+            Text("\(filteredAccounts.count) species")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .padding(.horizontal)
+
+            List(filteredAccounts, id: \.id) { item in
 
                 VStack(alignment: .leading, spacing: 4) {
 
@@ -234,6 +240,7 @@ struct ContentView: View {
                 }
                 .padding(.vertical, 4)
             }
+            .accessibilityIdentifier("accountsList")
         }
         .navigationTitle("British Micros")
         .toolbar {
