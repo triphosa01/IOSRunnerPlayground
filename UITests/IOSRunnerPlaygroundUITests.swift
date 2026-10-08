@@ -127,7 +127,7 @@ final class IOSRunnerPlaygroundUITests: XCTestCase {
         // should produce exactly 11,717 rows.
         XCTAssertEqual(
             recordCount.label,
-            "11,717 species"
+            "11,717 records"
         )
     }
 
