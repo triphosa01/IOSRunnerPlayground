@@ -6,7 +6,7 @@ final class IOSRunnerPlaygroundUITests: XCTestCase {
 
         let app = XCUIApplication()
 
-        // Start with a clean application state.
+        // First launch: reset the preference.
         app.launchArguments = [
             "-UITestResetPreferences"
         ]
@@ -22,7 +22,6 @@ final class IOSRunnerPlaygroundUITests: XCTestCase {
             "Expand/collapse button was not found"
         )
 
-        // The app should initially be expanded.
         XCTAssertEqual(
             toggle.label,
             "Collapse accounts"
@@ -39,7 +38,10 @@ final class IOSRunnerPlaygroundUITests: XCTestCase {
         // Terminate the application.
         app.terminate()
 
-        // Relaunch it.
+        // Remove the reset argument before relaunching.
+        app.launchArguments = []
+
+        // Relaunch.
         app.launch()
 
         let toggleAfterRelaunch = app.buttons[
@@ -51,7 +53,7 @@ final class IOSRunnerPlaygroundUITests: XCTestCase {
             "Expand/collapse button was not found after relaunch"
         )
 
-        // The collapsed state should have persisted.
+        // This should now be the persisted state.
         XCTAssertEqual(
             toggleAfterRelaunch.label,
             "Expand accounts"
