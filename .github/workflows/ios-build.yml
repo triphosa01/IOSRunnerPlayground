@@ -26,16 +26,16 @@ jobs:
         run: xcodegen generate
 
       - name: Build for iOS Simulator
-        run: >-
-          xcodebuild
-          -project IOSRunnerPlayground.xcodeproj
-          -scheme IOSRunnerPlayground
-          -configuration Debug
-          -sdk iphonesimulator
-          -destination 'generic/platform=iOS Simulator'
-          CODE_SIGNING_ALLOWED=NO
-          -derivedDataPath build
-          build
+        run: |
+          xcodebuild \
+            -project IOSRunnerPlayground.xcodeproj \
+            -scheme IOSRunnerPlayground \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' \
+            CODE_SIGNING_ALLOWED=NO \
+            -derivedDataPath build \
+            build
 
       - name: Find built application
         run: find build -name "*.app" -type d
@@ -61,27 +61,24 @@ jobs:
 
           xcrun simctl install "$SIMULATOR_UDID" "$APP_PATH"
 
-        - name: Launch application
-          run: |
-            echo "Application bundle identifier:"
+      - name: Get bundle identifier
+        run: |
+          BUNDLE_ID=$(xcodebuild \
+            -project IOSRunnerPlayground.xcodeproj \
+            -scheme IOSRunnerPlayground \
+            -showBuildSettings |
+            grep "PRODUCT_BUNDLE_IDENTIFIER =" |
+            head -1 |
+            awk -F ' = ' '{print $2}')
 
-            xcodebuild \
-              -project IOSRunnerPlayground.xcodeproj \
-              -scheme IOSRunnerPlayground \
-              -showBuildSettings |
-              grep PRODUCT_BUNDLE_IDENTIFIER
+          echo "Bundle identifier: $BUNDLE_ID"
+          echo "BUNDLE_ID=$BUNDLE_ID" >> "$GITHUB_ENV"
 
-            BUNDLE_ID=$(xcodebuild \
-              -project IOSRunnerPlayground.xcodeproj \
-              -scheme IOSRunnerPlayground \
-              -showBuildSettings |
-              grep PRODUCT_BUNDLE_IDENTIFIER |
-              head -1 |
-              awk -F ' = ' '{print $2}')
+      - name: Launch application
+        run: |
+          echo "Launching: $BUNDLE_ID"
 
-            echo "Launching bundle: $BUNDLE_ID"
-
-            xcrun simctl launch "$SIMULATOR_UDID" "$BUNDLE_ID"
+          xcrun simctl launch "$SIMULATOR_UDID" "$BUNDLE_ID"
 
       - name: List running simulator
         run: |
