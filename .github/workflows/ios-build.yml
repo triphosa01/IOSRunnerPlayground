@@ -107,3 +107,38 @@ jobs:
 
       - name: List simulator devices
         run: xcrun simctl list devices
+
+      
+      - name: Build for physical iPhone
+        run: |
+          xcodebuild \
+            -project IOSRunnerPlayground.xcodeproj \
+            -scheme IOSRunnerPlayground \
+            -configuration Debug \
+            -sdk iphoneos \
+            -destination 'generic/platform=iOS' \
+            CODE_SIGNING_ALLOWED=NO \
+            -derivedDataPath build-device \
+            build
+
+      - name: Package unsigned IPA
+        run: |
+          APP_PATH="build-device/Build/Products/Debug-iphoneos/IOSRunnerPlayground.app"
+
+          test -d "$APP_PATH" || {
+            echo "ERROR: iPhone app not found"
+            exit 1
+          }
+
+          mkdir -p package/Payload
+          cp -R "$APP_PATH" package/Payload/
+
+          cd package
+          /usr/bin/zip -r ../IOSRunnerPlayground-unsigned.ipa Payload
+
+      - name: Upload iPhone IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-device-ipa
+          path: IOSRunnerPlayground-unsigned.ipa
+          if-no-files-found: error
