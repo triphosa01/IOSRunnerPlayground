@@ -17,6 +17,7 @@ targets:
       - path: App/Data/lpyAccounts.db
 
     info:
+      path: App/Info.plist
       properties:
         NSAppTransportSecurity:
           NSExceptionDomains:
