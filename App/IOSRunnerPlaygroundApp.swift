@@ -189,6 +189,9 @@ struct ContentView: View {
 
     @State private var showWebView = false
 
+    @State private var showingLeafmines = false
+    @State private var showingUKMoths = false
+
     private var filteredAccounts: [AccountsList] {
         accounts.filter { item in
             selectedStage == "All" ||
@@ -316,6 +319,12 @@ struct ContentView: View {
                 }
                 .accessibilityLabel("Open Leafmines")
                 .accessibilityIdentifier("openLeafminesButton")
+                Button {
+                    showingUKMoths = true
+                } label: {
+                    Label("Open UKMoths", systemImage: "globe")
+                }
+                .accessibilityIdentifier("openUKMothsButton")
             }
         }
         .sheet(isPresented: $showWebView) {
@@ -326,6 +335,17 @@ struct ContentView: View {
                     )!
                 )
                 .navigationTitle("Leafmines")
+                .navigationBarTitleDisplayMode(.inline)
+            }
+        }
+        .sheet(isPresented: $showingUKMoths) {
+            NavigationStack {
+                WebView(
+                    url: URL(
+                        string: "https://www.ukmoths.org.uk/species/bactra-robustana/"
+                    )!
+                )
+                .navigationTitle("UKMoths")
                 .navigationBarTitleDisplayMode(.inline)
             }
         }
