@@ -312,19 +312,21 @@ struct ContentView: View {
                 )
             }
             ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    showWebView = true
+                Menu {
+                    Button {
+                        showingLeafmines = true
+                    } label: {
+                        Text("Open Leafmines")
+                    }
+
+                    Button {
+                        showingUKMoths = true
+                    } label: {
+                        Text("Open UKMoths")
+                    }
                 } label: {
                     Image(systemName: "globe")
                 }
-                .accessibilityLabel("Open Leafmines")
-                .accessibilityIdentifier("openLeafminesButton")
-                Button {
-                    showingUKMoths = true
-                } label: {
-                    Label("Open UKMoths", systemImage: "globe")
-                }
-                .accessibilityIdentifier("openUKMothsButton")
             }
         }
         .sheet(isPresented: $showWebView) {
