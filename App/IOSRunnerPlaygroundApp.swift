@@ -314,11 +314,15 @@ struct ContentView: View {
             ToolbarItem(placement: .topBarTrailing) {
                 Menu {
                     Button {
-                        showingLeafmines = true
+                        showWebView = true
                     } label: {
                         Text("Open Leafmines")
                     }
-
+                    Button {
+                        showingLeafmines = true
+                    } label: {
+                        Text("Open Leafmines Https")
+                    }
                     Button {
                         showingUKMoths = true
                     } label: {
@@ -337,6 +341,17 @@ struct ContentView: View {
                     )!
                 )
                 .navigationTitle("Leafmines")
+                .navigationBarTitleDisplayMode(.inline)
+            }
+        }
+        .sheet(isPresented: $showLeafmines) {
+            NavigationStack {
+                WebView(
+                    url: URL(
+                        string: "https://www.leafmines.co.uk/html/Lepidoptera/B.robustana.htm"
+                    )!
+                )
+                .navigationTitle("LeafminesHttps")
                 .navigationBarTitleDisplayMode(.inline)
             }
         }
