@@ -43,4 +43,3 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.example.IOSRunnerPlaygroundUITests
         SWIFT_VERSION: "5.0"
-```
