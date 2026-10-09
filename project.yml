@@ -1,3 +1,4 @@
+```yaml
 name: IOSRunnerPlayground
 
 options:
@@ -16,13 +17,19 @@ targets:
     resources:
       - path: App/Data/lpyAccounts.db
 
+    info:
+      properties:
+        NSAppTransportSecurity:
+          NSExceptionDomains:
+            www.leafmines.co.uk:
+              NSExceptionAllowsInsecureHTTPLoads: true
+
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.example.IOSRunnerPlayground
         PRODUCT_NAME: IOSRunnerPlayground
         GENERATE_INFOPLIST_FILE: YES
         INFOPLIST_KEY_UILaunchScreen_Generation: YES
-        INFOPLIST_KEY_NSAppTransportSecurity_NSExceptionDomains_www.leafmines.co.uk_NSExceptionAllowsInsecureHTTPLoads: YES
         SWIFT_VERSION: "5.0"
         TARGETED_DEVICE_FAMILY: "1,2"
 
@@ -37,3 +44,4 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.example.IOSRunnerPlaygroundUITests
         SWIFT_VERSION: "5.0"
+```

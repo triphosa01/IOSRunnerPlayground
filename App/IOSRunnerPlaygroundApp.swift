@@ -344,7 +344,7 @@ struct ContentView: View {
                 .navigationBarTitleDisplayMode(.inline)
             }
         }
-        .sheet(isPresented: $showLeafmines) {
+        .sheet(isPresented: $showingLeafmines) {
             NavigationStack {
                 WebView(
                     url: URL(
