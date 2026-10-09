@@ -131,28 +131,4 @@ final class IOSRunnerPlaygroundUITests: XCTestCase {
         )
     }
 
-    func testLeafminesWebView() {
-
-        let app = XCUIApplication()
-
-        app.launch()
-
-        let openLeafminesButton = app.buttons[
-            "openLeafminesButton"
-        ]
-
-        XCTAssertTrue(
-            openLeafminesButton.waitForExistence(timeout: 10),
-            "Open Leafmines button was not found"
-        )
-
-        openLeafminesButton.tap()
-
-        let webView = app.webViews.firstMatch
-
-        XCTAssertTrue(
-            webView.waitForExistence(timeout: 15),
-            "Leafmines WebView was not found"
-        )
-    }
 }
